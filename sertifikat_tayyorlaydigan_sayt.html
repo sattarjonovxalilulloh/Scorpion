@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <title>Sertifikat Yasash — Single HTML</title>
+  <!-- CSS-ni o'zingiz yozishingiz uchun minimal classlar berilgan.  -->
+  <style>
+    :root{--primary:#1f4aff;--accent:#f39c12;--bg:#ffffff;--ink:#1c1c1c}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;}
+    .app{display:grid;grid-template-columns:360px 1fr;min-height:100vh}
+    .panel{padding:16px;border-right:1px solid #eee;overflow:auto}
+    .panel h2{margin:8px 0 12px}
+    .panel label{display:block;font-size:12px;margin:12px 0 4px;color:#444}
+    .panel input,.panel select,.panel textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:8px}
+    .panel .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .btn{padding:10px 12px;border:1px solid #ccc;border-radius:10px;background:#fff;cursor:pointer}
+    .btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn.warn{background:#ef4444;color:#fff;border-color:#ef4444}
+    .stage{display:flex;align-items:center;justify-content:center;background:#f6f7fb}
+    .wrap{padding:24px}
+    /* Preview area keeps aspect ratio */
+    .preview{background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+    .notice{font-size:12px;color:#666;margin-top:8px}
+  </style>
+</head>
+<body>
+<div class="app">
+  <!-- LEFT: Controls -->
+  <aside class="panel">
+    <h2 class="sarlavha">Sertifikat sozlamalari</h2>
+
+    <label>Sarlavha (masalan, CERTIFICATE)</label>
+    <input id="title" value="CERTIFICATE" />
+
+    <label class="ism">Qabul qiluvchi F.I.Sh</label>
+    <input id="name" value="Akmal Azizov" />
+
+    <label>Daraja / Yo'nalish</label>
+    <input id="level" value="B2 — English" />
+
+    <label>Qo'shimcha matn</label>
+    <textarea id="desc" rows="3">Has successfully demonstrated B2 level proficiency according to CEFR.</textarea>
+
+    <div class="row">
+      <div>
+        <label>Sana</label>
+        <input id="date" type="date" />
+      </div>
+      <div>
+        <label>Sertifikat ID</label>
+        <input id="cid" placeholder="B2-2025-0001" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Beruvchi tashkilot</label>
+        <input id="issuer" value="Global Language Certification" />
+      </div>
+      <div>
+        <label>Direktor / Imzo osti</label>
+        <input id="signer" value="Emily Simpson, Director" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>O'lcham</label>
+        <select id="size">
+          <option value="1600x1131">A4 Landscape (1600×1131 px)</option>
+          <option value="1131x1600">A4 Portrait (1131×1600 px)</option>
+          <option value="1920x1080">HD 1920×1080 px</option>
+          <option value="2480x1754">A4 @300dpi (2480×1754 px)</option>
+        </select>
+      </div>
+      <div>
+        <label>Shablon</label>
+        <select id="template">
+          <option value="classic">Classic</option>
+          <option value="minimal">Minimal</option>
+          <option value="bold">Bold</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Asosiy rang</label>
+        <input id="primary" type="color" value="#1f4aff" />
+      </div>
+      <div>
+        <label>Qo'shimcha rang</label>
+        <input id="accent" type="color" value="#f39c12" />
+      </div>
+    </div>
+
+    <label>Logo yuklash (PNG/SVG/JPG)</label>
+    <input id="logo" type="file" accept="image/*" />
+
+    <label>Imzo rasm yuklash</label>
+    <input id="signature" type="file" accept="image/*" />
+
+    <div class="actions">
+      <button class="btn primary" id="downloadPng">PNG yuklab olish</button>
+      <button class="btn" id="downloadSvg">SVG yuklab olish</button>
+      <button class="btn" id="printBtn">PDF (Print)!</button>
+      <button class="btn warn" id="resetBtn">Tozalash</button>
+    </div>
+    <p class="notice">Eslatma: Bu shablon <b>namuna</b> uchun. Haqiqiy tashkilot nomlari va logolarini faqat ruxsat bilan ishlating.</p>
+  </aside>
+
+  <!-- RIGHT: Preview -->
+  <main class="stage">
+    <div class="wrap">
+      <div id="previewHost" class="preview"></div>
+      <div class="notice">O'lcham va ranglarni o'zgartirib ko'ring. PNG/ SVG saqlash mumkin.</div>
+    </div>
+  </main>
+</div>
+
+<!-- SVG TEMPLATE (dynamic) -->
+<script>
+(function(){
+  const $ = s=>document.querySelector(s);
+  const host = $('#previewHost');
+
+  function parseSize(val){
+    const [w,h] = val.split('x').map(Number);return {w,h};
+  }
+
+  // Create SVG document string based on state
+  function renderSVG(state){
+    const {w,h} = parseSize(state.size);
+    const pad = Math.round(Math.min(w,h)*0.06);
+    const titleSize = Math.round(h*0.08);
+    const nameSize  = Math.round(h*0.06);
+    const levelSize = Math.round(h*0.04);
+    const small     = Math.round(h*0.024);
+
+    let bgDecor = '';
+    if(state.template==='classic'){
+      bgDecor = `
+        <rect x="${pad/2}" y="${pad/2}" width="${w-pad}" height="${h-pad}" rx="22" fill="none" stroke="${state.primary}" stroke-width="3"/>
+        <rect x="${pad}" y="${pad}" width="${w-pad*2}" height="${h-pad*2}" rx="16" fill="white" stroke="#e5e7eb"/>
+      `;
+    } else if(state.template==='minimal'){
+      bgDecor = `
+        <rect width="${w}" height="${h}" fill="white"/>
+        <rect width="${w}" height="${Math.round(h*0.12)}" fill="${state.primary}"/>
+      `;
+    } else { // bold
+      bgDecor = `
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="${state.primary}"/>
+            <stop offset="100%" stop-color="${state.accent}"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="white"/>
+        <circle cx="${w*0.12}" cy="${h*0.1}" r="${h*0.2}" fill="url(#g)" opacity="0.2"/>
+        <circle cx="${w*0.9}" cy="${h*0.9}" r="${h*0.22}" fill="url(#g)" opacity="0.18"/>
+      `;
+    }
+
+    // Logo + Signature
+    const logo = state.logo ? `<image href="${state.logo}" x="${pad}" y="${pad}" height="${Math.round(h*0.12)}" preserveAspectRatio="xMidYMid meet"/>` : '';
+    const signature = state.signature ? `<image href="${state.signature}" x="${w-pad*3}" y="${h-pad*2.5}" height="${Math.round(h*0.09)}" preserveAspectRatio="xMidYMid meet"/>` : '';
+
+    const dateText = state.date ? new Date(state.date).toLocaleDateString() : '';
+
+    // Compose SVG
+    return `
+    <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+      <style>
+        .title{font: ${titleSize}px/1.1 'Segoe UI', Roboto, Arial, sans-serif; font-weight:700; fill:#1f2937; letter-spacing:3px}
+        .muted{font:${small}px/1.4 'Segoe UI', Roboto, Arial, sans-serif; fill:#4b5563}
+        .name{font:${nameSize}px/1.2 'Segoe UI', Roboto, Arial, sans-serif; font-weight:700; fill:#111827}
+        .level{font:${levelSize}px/1.2 'Segoe UI', Roboto, Arial, sans-serif; font-weight:600; fill:${state.primary}}
+        .foot{font:${small}px/1.2 'Segoe UI', Roboto, Arial, sans-serif; fill:#374151}
+      </style>
+      <rect width="100%" height="100%" fill="white"/>
+      ${bgDecor}
+      ${logo}
+
+      <g text-anchor="middle" transform="translate(${w/2}, ${h*0.26})">
+        <text class="title" y="0">${escapeXml(state.title || '')}</text>
+        <text class="muted" y="${small*2.2}">This is to certify that</text>
+      </g>
+
+      <g text-anchor="middle" transform="translate(${w/2}, ${h*0.48})">
+        <text class="name">${escapeXml(state.name || '')}</text>
+        <text class="level" y="${levelSize*1.8}">${escapeXml(state.level || '')}</text>
+      </g>
+
+      <foreignObject x="${pad*1.5}" y="${h*0.58}" width="${w-pad*3}" height="${h*0.18}">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="font:${small}px/1.5 'Segoe UI', Roboto, Arial; color:#374151; text-align:center;">
+          ${escapeHtml(state.desc || '')}
+        </div>
+      </foreignObject>
+
+      <g>
+        <text class="foot" x="${pad}" y="${h-pad}" >${escapeXml(state.issuer || '')}</text>
+        <text class="foot" x="${w/2}" y="${h-pad}">ID: ${escapeXml(state.cid || '')}</text>
+        <text class="foot" x="${w-pad}" y="${h-pad}" text-anchor="end">${escapeXml(dateText)}</text>
+      </g>
+
+      <g transform="translate(${w-pad*1.2}, ${h-pad*0.9})" text-anchor="end">
+        ${signature}
+        <text class="foot" y="${signature? small*1.4 : 0}">${escapeXml(state.signer || '')}</text>
+      </g>
+    </svg>`;
+  }
+
+  function escapeXml(s){return (s+"").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&apos;"}[m]));}
+  function escapeHtml(s){return (s+"").replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  const state = {
+    title: $('#title').value,
+    name: $('#name').value,
+    level: $('#level').value,
+    desc: $('#desc').value,
+    date: $('#date').value,
+    cid: $('#cid').value,
+    issuer: $('#issuer').value,
+    signer: $('#signer').value,
+    size: $('#size').value,
+    template: $('#template').value,
+    primary: $('#primary').value,
+    accent: $('#accent').value,
+    logo: null,
+    signature: null
+  };
+
+  function update(){
+    const svgStr = renderSVG(state);
+    host.innerHTML = svgStr; // inject
+    const {w,h} = parseSize(state.size);
+    host.style.width = Math.min(w, 1000) + 'px';
+    host.style.aspectRatio = w+' / '+h;
+  }
+
+  // Bind inputs
+  ['title','name','level','desc','date','cid','issuer','signer','size','template','primary','accent'].forEach(id=>{
+    $('#'+id).addEventListener('input', (e)=>{state[id]=e.target.value; update();});
+    $('#'+id).addEventListener('change',(e)=>{state[id]=e.target.value; update();});
+  });
+
+  function fileToDataUrl(file){
+    return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});
+  }
+
+  $('#logo').addEventListener('change', async (e)=>{
+    const f=e.target.files[0]; if(!f) return; state.logo = await fileToDataUrl(f); update();
+  });
+  $('#signature').addEventListener('change', async (e)=>{
+    const f=e.target.files[0]; if(!f) return; state.signature = await fileToDataUrl(f); update();
+  });
+
+  // Download SVG
+  $('#downloadSvg').addEventListener('click', ()=>{
+    const svg = renderSVG(state);
+    const blob = new Blob([svg],{type:'image/svg+xml'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename('certificate','.svg');
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+  });
+
+  // Download PNG (SVG -> Canvas -> PNG)
+  $('#downloadPng').addEventListener('click', async ()=>{
+    const svgText = renderSVG(state);
+    const {w,h} = parseSize(state.size);
+    const svgBlob = new Blob([svgText], {type:'image/svg+xml'});
+    const url = URL.createObjectURL(svgBlob);
+    const img = new Image();
+    img.onload = ()=>{
+      const c = document.createElement('canvas'); c.width=w; c.height=h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,w,h);
+      ctx.drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      c.toBlob((blob)=>{
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename('certificate','.png');
+        a.click();
+        setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+      });
+    };
+    img.onerror = ()=>{alert('Rasmni yaratishda xatolik. Brauzerni yangilang.'); URL.revokeObjectURL(url)};
+    img.src = url;
+  });
+
+  // Print to PDF (use system dialog)
+  $('#printBtn').addEventListener('click', ()=>{
+    // Open new window with raw SVG for clean print
+    const svg = renderSVG(state);
+    const w = window.open('','_blank','width=900,height=700');
+    w.document.write(`<!doctype html><title>Print Certificate</title><style>body{margin:0}</style>${svg}`);
+    w.document.close();
+    w.focus();
+    w.print();
+  });
+
+  $('#resetBtn').addEventListener('click', ()=>{
+    if(!confirm('Barchasini tozalaymizmi?')) return;
+    ['logo','signature'].forEach(id=>{document.getElementById(id).value='';});
+    state.logo=null; state.signature=null; update();
+  });
+
+  function filename(base, ext){
+    const d = new Date();
+    const stamp = [d.getFullYear(), ('0'+(d.getMonth()+1)).slice(-2), ('0'+d.getDate()).slice(-2)].join('');
+    return `${base}-${stamp}${ext}`;
+  }
+
+  // Init default date today
+  const today = new Date();
+  $('#date').value = today.toISOString().slice(0,10);
+  state.date = $('#date').value;
+
+  update();
+})();
+</script>
+</body>
+</html>
