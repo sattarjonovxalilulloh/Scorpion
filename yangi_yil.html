@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yangi Yil Salyutlari - Pirotexnika Do'koni</title>
+    <style>
+        /* Umumiy uslublar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c1b33 0%, #1a1a2e 50%, #16213e 100%);
+            color: #fff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Animatsiyalar */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes firework {
+            0% { transform: translateY(0) scale(0); opacity: 1; }
+            50% { transform: translateY(-100px) scale(1); opacity: 1; }
+            100% { transform: translateY(-200px) scale(1.5); opacity: 0; }
+        }
+        
+        /* Yulduzlar fon efekti */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+        
+        /* Sarlavha va navigatsiya */
+        header {
+            background: rgba(10, 25, 47, 0.9);
+            padding: 1rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            margin-right: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        
+        nav ul li a:hover {
+            color: #ffcc00;
+            background: rgba(255, 204, 0, 0.1);
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+        }
+        
+        /* Hero qismi */
+        .hero {
+            position: relative;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, rgba(0,0,0,0) 70%);
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 20px rgba(255, 204, 0, 0.8);
+            background: linear-gradient(to right, #ffcc00, #ff9900, #ff6600);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            color: #e0e0e0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffcc00, #ff9900);
+            color: #0c1b33;
+            padding: 14px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 153, 0, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 153, 0, 0.6);
+            background: linear-gradient(135deg, #ffd633, #ffad33);
+        }
+        
+        /* Mahsulotlar bo'limi */
+        .products {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+        
+        .product-card {
+            background: rgba(20, 30, 48, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 15px 35px rgba(255, 153, 0, 0.3);
+            border: 1px solid rgba(255, 204, 0, 0.5);
+        }
+        
+        .product-img {
+            height: 220px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+        }
+        
+        .product-info {
+            padding: 1.8rem;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.5rem;
+            color: #ffcc00;
+        }
+        
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ff9900;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+        }
+        
+        .product-description {
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .add-to-cart {
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+        }
+        
+        .add-to-cart:hover {
+            background: linear-gradient(135deg, #ff8533, #ff5c33);
+            box-shadow: 0 7px 20px rgba(255, 102, 0, 0.6);
+        }
+        
+        /* Xavfsizlik bo'limi */
+        .safety {
+            background: rgba(10, 25, 47, 0.8);
+            padding: 4rem 0;
+            border-radius: 20px;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+        
+        .safety-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .safety-card {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            background: rgba(20, 30, 48, 0.5);
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+        
+        .safety-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(255, 153, 0, 0.2);
+        }
+        
+        .safety-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: #ffcc00;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+        }
+        
+        .safety-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            color: #ffcc00;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(5, 15, 30, 0.95);
+            padding: 3rem 0 1.5rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.3);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column ul li a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: #ffcc00;
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.2);
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        /* Savat modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 50px rgba(255, 153, 0, 0.3);
+            border: 1px solid rgba(255, 204, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+            padding-bottom: 1.2rem;
+        }
+        
+        .modal-header h2 {
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #ff9900;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #ffcc00;
+            transform: scale(1.2);
+        }
+        
+        .cart-items {
+            margin-bottom: 1.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.1);
+        }
+        
+        .cart-total {
+            font-weight: bold;
+            font-size: 1.4rem;
+            text-align: right;
+            margin-bottom: 1.8rem;
+            color: #ffcc00;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        .checkout-btn {
+            background: linear-gradient(135deg, #ff6600, #ff3300);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(255, 102, 0, 0.4);
+        }
+        
+        .checkout-btn:hover {
+            background: linear-gradient(135deg, #ff8533, #ff5c33);
+            box-shadow: 0 7px 20px rgba(255, 102, 0, 0.6);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive dizayn */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1.2rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+        
+        /* Pirotexnika animatsiyalari */
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 204, 0, 0.8);
+            animation: firework 2s ease-out forwards;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Yulduzlar fon efekti -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Sarlavha va navigatsiya -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">🎆</div>
+                    <div>YangiYilSalyut</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#bosh-sahifa">Bosh Sahifa</a></li>
+                        <li><a href="#mahsulotlar">Salyutlar</a></li>
+                        <li><a href="#xavfsizlik">Xavfsizlik</a></li>
+                        <li><a href="#biz-haqimizda">Biz Haqimizda</a></li>
+                        <li><a href="#aloqa">Aloqa</a></li>
+                        <li><a href="#" id="cart-btn">Savat 🛒</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero qismi -->
+    <section class="hero" id="bosh-sahifa">
+        <div class="hero-content">
+            <h1>Yangi Yil Salyut va Pirotexnika</h1>
+            <p>Yangi yil bayramini yorqin va unutilmas qilish uchun eng ajoyib salyut va pirotexnika mahsulotlari. Xavfsiz, sifatli va arzon narxlarda!</p>
+            <a href="#mahsulotlar" class="btn">Mahsulotlarni Ko'rish</a>
+        </div>
+    </section>
+
+    <!-- Mahsulotlar bo'limi -->
+    <section class="products" id="mahsulotlar">
+        <div class="container">
+            <h2 class="section-title">Bizning Mahsulotlar</h2>
+            <div class="product-grid">
+                <!-- Mahsulot 1 -->
+                <div class="product-card">
+                    <div class="product-img">🎇</div>
+                    <div class="product-info">
+                        <h3>Yulduzli Salyut Batareyasi</h3>
+                        <div class="product-price">85,000 so'm</div>
+                        <p class="product-description">50 ta turli rangdagi yulduzlar bilan 90 metr balandlikka chiqadigan salyut batareyasi. 30 soniya davom etadi.</p>
+                        <button class="add-to-cart" data-id="1" data-name="Yulduzli Salyut Batareyasi" data-price="85000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+                
+                <!-- Mahsulot 2 -->
+                <div class="product-card">
+                    <div class="product-img">✨</div>
+                    <div class="product-info">
+                        <h3>Galdirak Feyerverk</h3>
+                        <div class="product-price">45,000 so'm</div>
+                        <p class="product-description">Aylana shaklida aylana harakat qiluvchi, rang-barang otiladigan galdirak feyerverk. 15 dona to'plam.</p>
+                        <button class="add-to-cart" data-id="2" data-name="Galdirak Feyerverk" data-price="45000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+                
+                <!-- Mahsulot 3 -->
+                <div class="product-card">
+                    <div class="product-img">🎆</div>
+                    <div class="product-info">
+                        <h3>Katta O'qchi Salyut</h3>
+                        <div class="product-price">120,000 so'm</div>
+                        <p class="product-description">150 metr balandlikka chiqadigan, 12 ta kuchli portlovchi salyut. Har biri turli rang va shaklda.</p>
+                        <button class="add-to-cart" data-id="3" data-name="Katta O'qchi Salyut" data-price="120000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+                
+                <!-- Mahsulot 4 -->
+                <div class="product-card">
+                    <div class="product-img">🔥</div>
+                    <div class="product-info">
+                        <h3>Alanga Chiqaruvchi Tayoqcha</h3>
+                        <div class="product-price">25,000 so'm</div>
+                        <p class="product-description">Qo'lda ushlab, rang-barang alangalar chiqaradigan xavfsiz tayoqchalar. 10 dona to'plam.</p>
+                        <button class="add-to-cart" data-id="4" data-name="Alanga Chiqaruvchi Tayoqcha" data-price="25000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+                
+                <!-- Mahsulot 5 -->
+                <div class="product-card">
+                    <div class="product-img">💥</div>
+                    <div class="product-info">
+                        <h3>Portlovchi Shar</h3>
+                        <div class="product-price">65,000 so'm</div>
+                        <p class="product-description">Yerga tashlanganda portlaydigan, rangli konfetti chiqaradigan xavfsiz sharlar. 24 dona to'plam.</p>
+                        <button class="add-to-cart" data-id="5" data-name="Portlovchi Shar" data-price="65000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+                
+                <!-- Mahsulot 6 -->
+                <div class="product-card">
+                    <div class="product-img">⭐</div>
+                    <div class="product-info">
+                        <h3>Yangi Yil To'plami</h3>
+                        <div class="product-price">220,000 so'm</div>
+                        <p class="product-description">Toliq yangi yil bayrami uchun maxsus to'plam: salyut, galdirak, tayoqcha va portlovchi sharlar.</p>
+                        <button class="add-to-cart" data-id="6" data-name="Yangi Yil To'plami" data-price="220000">Savatga Qo'shish</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Xavfsizlik bo'limi -->
+    <section class="safety" id="xavfsizlik">
+        <div class="container">
+            <h2 class="section-title">Pirotexnika Xavfsizligi</h2>
+            <div class="safety-grid">
+                <div class="safety-card">
+                    <div class="safety-icon">🚫</div>
+                    <h3>Bolalardan Uzoqda</h3>
+                    <p>Pirotexnikani faqat kattalar ishlatsin. Bolalar faqat kattalar nazorati ostida tomosha qilishi mumkin.</p>
+                </div>
+                <div class="safety-card">
+                    <div class="safety-icon">🧯</div>
+                    <h3>Ochiq Havoda</h3>
+                    <p>Salyut va feyerverklarni faqat ochiq havoda, binolar va yonuvchi moddalardan uzoqda ishlating.</p>
+                </div>
+                <div class="safety-card">
+                    <div class="safety-icon">📏</div>
+                    <h3>Masofani Saqlang</h3>
+                    <p>Portlovchi moddalardan kamida 30 metr masofada turishingizni tavsiya etamiz.</p>
+                </div>
+                <div class="safety-card">
+                    <div class="safety-icon">💧</div>
+                    <h3>Suv Tayyorlang</h3>
+                    <p>Har qanday favqulodda vaziyat uchun yonish o'chirish vositalari va suvni tayyor tuting.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>YangiYilSalyut</h3>
+                    <p>Yangi yil bayramini yorqin va xavfsiz o'tkazish uchun eng sifatli pirotexnika mahsulotlari. Biz bilan bayramingiz yorqin bo'lsin!</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Tez Havolalar</h3>
+                    <ul>
+                        <li><a href="#bosh-sahifa">Bosh Sahifa</a></li>
+                        <li><a href="#mahsulotlar">Salyutlar</a></li>
+                        <li><a href="#xavfsizlik">Xavfsizlik</a></li>
+                        <li><a href="#biz-haqimizda">Biz Haqimizda</a></li>
+                        <li><a href="#aloqa">Aloqa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Aloqa Ma'lumotlari</h3>
+                    <ul>
+                        <li>📍 Toshkent shahri, Yunusobod tumani</li>
+                        <li>📞 +998 90 123 45 67</li>
+                        <li>✉️ info@yangiylsalyut.uz</li>
+                        <li>🕒 Ish vaqti: 9:00 - 20:00</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 YangiYilSalyut. Barcha huquqlar himoyalangan. Pirotexnikani ehtiyotkorlik bilan ishlating.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Savat modali -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Salyut Savati</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Savatdagi mahsulotlar bu yerda ko'rsatiladi -->
+            </div>
+            <div class="cart-total" id="cart-total">
+                Jami: 0 so'm
+            </div>
+            <button class="checkout-btn">Buyurtma Berish</button>
+        </div>
+    </div>
+
+    <script>
+        // Yulduzlar fonini yaratish
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 150;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // Tasodifiy joylashuv va o'lcham
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Tasodifiy chaqmoqlanish tezligi
+                star.style.animationDuration = `${Math.random() * 5 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Tasodifiy pirotexnika animatsiyasi
+        function createFirework() {
+            const colors = ['#ffcc00', '#ff9900', '#ff6600', '#ff3300', '#ff0066', '#cc00ff', '#0066ff'];
+            const firework = document.createElement('div');
+            firework.classList.add('firework');
+            
+            // Tasodifiy rang
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            firework.style.backgroundColor = color;
+            firework.style.boxShadow = `0 0 10px 2px ${color}`;
+            
+            // Tasodifiy joylashuv
+            firework.style.left = `${Math.random() * 100}%`;
+            firework.style.top = `${Math.random() * 100}%`;
+            
+            document.body.appendChild(firework);
+            
+            // Animatsiya tugagach olib tashlash
+            setTimeout(() => {
+                firework.remove();
+            }, 2000);
+        }
+        
+        // Savat funksiyalari
+        let cart = [];
+        const cartBtn = document.getElementById('cart-btn');
+        const cartModal = document.getElementById('cart-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const cartItems = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        
+        // Dasturni ishga tushirish
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            
+            // Har 3-5 soniyada pirotexnika animatsiyasi
+            setInterval(createFirework, 3000);
+        });
+        
+        // Savatni ochish
+        cartBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            updateCartDisplay();
+            cartModal.style.display = 'flex';
+        });
+        
+        // Savatni yopish
+        closeModal.addEventListener('click', () => {
+            cartModal.style.display = 'none';
+        });
+        
+        // Modal tashqarisiga bosilganda yopish
+        window.addEventListener('click', (e) => {
+            if (e.target === cartModal) {
+                cartModal.style.display = 'none';
+            }
+        });
+        
+        // Mahsulotni savatga qo'shish
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const id = button.getAttribute('data-id');
+                const name = button.getAttribute('data-name');
+                const price = parseInt(button.getAttribute('data-price'));
+                
+                // Mahsulotni savatga qo'shish
+                addToCart(id, name, price);
+                
+                // Foydalanuvchiga xabar berish
+                alert(`${name} savatga qo'shildi!`);
+                
+                // Pirotexnika animatsiyasi
+                createFirework();
+            });
+        });
+        
+        // Savatga mahsulot qo'shish funksiyasi
+        function addToCart(id, name, price) {
+            // Mahsulot allaqachon savatda bormi?
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id,
+                    name,
+                    price,
+                    quantity: 1
+                });
+            }
+            
+            updateCartDisplay();
+        }
+        
+        // Savatni ekranga chiqarish
+        function updateCartDisplay() {
+            // Savatdagi mahsulotlarni tozalash
+            cartItems.innerHTML = '';
+            
+            // Jami narxni hisoblash
+            let total = 0;
+            
+            // Agar savat bo'sh bo'lsa
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="text-align: center; color: #888;">Savat hozircha boʻsh</p>';
+                cartTotal.textContent = `Jami: 0 so'm`;
+                return;
+            }
+            
+            // Har bir mahsulotni ekranga chiqarish
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                
+                const cartItemElement = document.createElement('div');
+                cartItemElement.classList.add('cart-item');
+                cartItemElement.innerHTML = `
+                    <div>
+                        <strong>${item.name}</strong>
+                        <div>${item.quantity} x ${item.price.toLocaleString()} so'm</div>
+                    </div>
+                    <div>${itemTotal.toLocaleString()} so'm</div>
+                `;
+                
+                cartItems.appendChild(cartItemElement);
+            });
+            
+            // Jami narxni yangilash
+            cartTotal.textContent = `Jami: ${total.toLocaleString()} so'm`;
+        }
+    </script>
+</body>
+</html>
